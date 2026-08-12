@@ -2,6 +2,8 @@
 
 一个面向非技术人员的 Windows 桌面小工具，可以批量把文件夹中的 PowerPoint 和 Word 文件转换成 PDF。
 
+<img width="565" height="440" alt="1" src="https://github.com/user-attachments/assets/6d671668-b753-4630-a573-b5bb365a433f" />
+
 ## 功能
 
 - 支持 `.ppt`、`.pptx`、`.doc`、`.docx` 批量转换为 PDF
