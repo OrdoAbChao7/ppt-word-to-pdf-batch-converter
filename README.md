@@ -85,3 +85,8 @@ dist\PPT_Word_to_PDF.exe
 ## 许可证
 
 本项目使用 MIT License。
+
+
+---
+
+[English documentation](README.en.md)
