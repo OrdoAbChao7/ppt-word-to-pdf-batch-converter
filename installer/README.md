@@ -1,6 +1,6 @@
 # Windows 安装程序
 
-安装程序基于 [NSIS](https://nsis.sourceforge.io/)，以当前仓库根目录的 `PPT_Word_to_PDF.exe` 为唯一应用载荷。它会在当前用户的 `%LOCALAPPDATA%\PPT_Word_to_PDF` 安装主程序和使用说明，并创建桌面、开始菜单与卸载快捷方式。
+安装程序基于 [NSIS](https://nsis.sourceforge.io/)，以当前仓库根目录的 `PPT_Word_to_PDF.exe` 为唯一应用载荷。它会在当前用户的 `%LOCALAPPDATA%\PPT_Word_to_PDF` 安装主程序，并创建桌面、开始菜单与卸载快捷方式；完整使用说明保留在仓库 README 中。
 
 ## 本地构建
 

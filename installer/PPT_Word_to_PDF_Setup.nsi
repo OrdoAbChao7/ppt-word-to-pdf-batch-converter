@@ -68,7 +68,6 @@ FunctionEnd
 Section "安装 ${PRODUCT_NAME}" SEC_MAIN
   SetOutPath "$INSTDIR"
   File "/oname=${PRODUCT_EXE}" "PPT_Word_to_PDF.exe"
-  File "/oname=使用说明.txt" "使用说明.txt"
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
   WriteRegStr HKCU "${PRODUCT_REG_KEY}" "InstallDir" "$INSTDIR"
@@ -98,7 +97,6 @@ Section "Uninstall"
   RMDir "$SMPROGRAMS\$StartMenuFolder"
 
   Delete "$INSTDIR\${PRODUCT_EXE}"
-  Delete "$INSTDIR\使用说明.txt"
   Delete "$INSTDIR\Uninstall.exe"
   RMDir "$INSTDIR"
 
