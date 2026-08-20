@@ -1,50 +1,54 @@
-# PPT / Word 批量转 PDF 工具
+<div align="center">
+  <h1>ppt-word-to-pdf-batch-converter</h1>
+  **English** | [**中文**](./README_zh-CN.md)
+</div>
+<br>
 
-一个面向非技术人员的 Windows 桌面小工具，可以批量把文件夹中的 PowerPoint 和 Word 文件转换成 PDF。
+A Windows desktop utility for non-technical users that batch converts PowerPoint and Word files in a folder to PDF.
 
 <img width="565" height="440" alt="1" src="https://github.com/user-attachments/assets/6d671668-b753-4630-a573-b5bb365a433f" />
 
-## 功能
+## Features
 
-- 支持 `.ppt`、`.pptx`、`.doc`、`.docx` 批量转换为 PDF
-- 提供简洁 GUI，双击即可使用
-- 可选：先整理子文件夹，把子文件夹里的文件移动到主文件夹
-- 可选：转换成功后删除原始 PPT / Word 文件
-- 实时显示处理记录
+- Batch convert `.ppt`, `.pptx`, `.doc`, `.docx` to PDF
+- Simple GUI you can use by double-clicking
+- Optional: flatten subfolders by moving files from subfolders into the main folder
+- Optional: delete original PPT/Word files after successful conversion
+- Real-time processing log display
 
-## 运行环境
+## System requirements
 
 - Windows
-- 已安装 Microsoft PowerPoint 和 Microsoft Word
-- 如果直接运行源码，需要 Python 3.10 或更高版本
+- Microsoft PowerPoint and Microsoft Word installed
+- If running from source, Python 3.10 or later
 
-> 转换功能依赖本机 Office 程序，因此不适用于没有安装 Word / PowerPoint 的电脑。
+> Conversion relies on locally installed Office applications and will not work on machines without Word/PowerPoint.
 
-## 给普通用户使用
+## For end users
 
-推荐从 [Releases](../../releases) 下载 `PPT_Word_to_PDF_Setup_v1.0.1.exe`，双击安装后通过桌面或开始菜单启动程序。安装程序会在当前用户目录安装，不需要管理员权限。
+It is recommended to download `PPT_Word_to_PDF_Setup_v1.0.1.exe` from [Releases](../../releases). Double-click to install, then start the program from the Desktop or Start Menu. The installer performs a per-user installation and does not require administrator privileges.
 
-安装完成前，请确认电脑满足以下条件：
+Before installing, make sure your PC meets the following:
 
-- 使用 64 位 Windows。
-- 已安装可正常启动的 Microsoft Word 和 Microsoft PowerPoint。
-- Office 程序可以打开需要转换的文档。
+- 64-bit Windows
+- Microsoft Word and Microsoft PowerPoint are installed and can start normally
+- Office apps can open the documents you need to convert
 
-也可以下载仓库根目录中的绿色版程序后双击运行：
+You can also download the portable executable from the repository root and double-click to run:
 
 ```text
 PPT_Word_to_PDF.exe
 ```
 
-然后：
+Then:
 
-1. 点击“选择文件夹”
-2. 选择要处理的文件夹
-3. 按需勾选整理子文件夹、删除源文件
-4. 点击“开始转换”
-5. 等待完成提示
+1. Click "Choose Folder"
+2. Select the folder to process
+3. Check "Flatten subfolders" and/or "Delete source files" if needed
+4. Click "Start Conversion"
+5. Wait for the completion message
 
-## 从源码运行
+## Run from source
 
 ```bash
 python -m venv .venv
@@ -52,41 +56,41 @@ python -m venv .venv
 .venv\Scripts\python gui.py
 ```
 
-也可以直接双击：
+You can also simply double-click:
 
 ```text
 启动GUI.bat
 ```
 
-## 打包 exe
+## Build exe
 
 ```bash
 build_exe.bat
 ```
 
-打包完成后，程序会出现在：
+After building, the program will appear at:
 
 ```text
 dist\PPT_Word_to_PDF.exe
 ```
 
-## 打包 setup.exe
+## Build setup.exe
 
-安装 [NSIS](https://nsis.sourceforge.io/Download) 后，双击：
+After installing [NSIS](https://nsis.sourceforge.io/Download), double-click:
 
 ```text
 build_setup.bat
 ```
 
-生成的安装程序位于：
+The generated installer is located at:
 
 ```text
 release\PPT_Word_to_PDF_Setup_v1.0.1.exe
 ```
 
-安装程序会创建桌面和开始菜单快捷方式，同时提供标准卸载入口。发布流程、SHA-256 校验与 GitHub Actions 自动构建说明见 [installer/README.md](installer/README.md)。
+The installer will create Desktop and Start Menu shortcuts and provides a standard uninstaller. For release process, SHA-256 verification, and GitHub Actions automation, see [installer/README.md](installer/README.md).
 
-## 项目结构
+## Project structure
 
 ```text
 .
@@ -102,12 +106,12 @@ release\PPT_Word_to_PDF_Setup_v1.0.1.exe
 └── README.md           # 项目说明
 ```
 
-## 注意事项
+## Notes
 
-- 转换过程中请不要手动关闭 Word 或 PowerPoint。
-- 如果不确定是否需要保留原文件，请不要勾选“转换成功后删除原文件”。
-- 旧版 `.doc` / `.ppt` 文件能否成功转换，取决于本机 Office 是否能正常打开该文件。
+- Do not manually close Word or PowerPoint during conversion.
+- If you are not sure whether to keep the original files, do not check "Delete original files after successful conversion".
+- Whether legacy `.doc`/`.ppt` files can be converted depends on whether your local Office can open them.
 
-## 许可证
+## License
 
-本项目使用 MIT License。
+This project uses the MIT License.
