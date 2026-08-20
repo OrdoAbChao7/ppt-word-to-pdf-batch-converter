@@ -8,3 +8,4 @@
 - [ ] Commit installer sources, create a GitHub Release, and upload the setup.exe asset.
 - [ ] Verify the public GitHub Release and deliver its download link.
 - [x] Normalize NSIS source and output paths so the setup.exe compiles reproducibly on Linux and Windows hosts.
+- [ ] Diagnose and correct the Windows GitHub Actions setup.exe build failure, then rerun the v1.0.1 release workflow.

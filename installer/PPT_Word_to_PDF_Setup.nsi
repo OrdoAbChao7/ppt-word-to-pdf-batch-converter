@@ -6,6 +6,11 @@ SetCompressor /SOLID lzma
 !include "LogicLib.nsh"
 !include "x64.nsh"
 
+!ifndef PROJECT_ROOT
+  !error "Pass an absolute PROJECT_ROOT when compiling this installer."
+!endif
+!cd "${PROJECT_ROOT}"
+
 !define PRODUCT_NAME "PPT / Word 批量转 PDF"
 !define PRODUCT_EXE "PPT_Word_to_PDF.exe"
 !define PRODUCT_VERSION "1.0.1"
@@ -17,7 +22,7 @@ SetCompressor /SOLID lzma
 Var StartMenuFolder
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "../release/PPT_Word_to_PDF_Setup_v${PRODUCT_VERSION}.exe"
+OutFile "release/PPT_Word_to_PDF_Setup_v${PRODUCT_VERSION}.exe"
 InstallDir "$LOCALAPPDATA\PPT_Word_to_PDF"
 InstallDirRegKey HKCU "${PRODUCT_REG_KEY}" "InstallDir"
 BrandingText "${PRODUCT_NAME}"
@@ -62,8 +67,8 @@ FunctionEnd
 
 Section "安装 ${PRODUCT_NAME}" SEC_MAIN
   SetOutPath "$INSTDIR"
-  File "/oname=${PRODUCT_EXE}" "../PPT_Word_to_PDF.exe"
-  File "/oname=使用说明.txt" "../使用说明.txt"
+  File "/oname=${PRODUCT_EXE}" "PPT_Word_to_PDF.exe"
+  File "/oname=使用说明.txt" "使用说明.txt"
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
   WriteRegStr HKCU "${PRODUCT_REG_KEY}" "InstallDir" "$INSTDIR"

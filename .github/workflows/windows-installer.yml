@@ -24,7 +24,7 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force release | Out-Null
-          & "C:\Program Files (x86)\NSIS\makensis.exe" installer\PPT_Word_to_PDF_Setup.nsi
+          & "C:\Program Files (x86)\NSIS\makensis.exe" /DPROJECT_ROOT="$env:GITHUB_WORKSPACE" installer\PPT_Word_to_PDF_Setup.nsi
           Get-FileHash release\PPT_Word_to_PDF_Setup_v1.0.1.exe -Algorithm SHA256 | ForEach-Object { "$($_.Hash)  $($_.Path | Split-Path -Leaf)" } | Set-Content -Encoding ascii release\PPT_Word_to_PDF_Setup_v1.0.1.exe.sha256
 
       - name: Upload installer artifact

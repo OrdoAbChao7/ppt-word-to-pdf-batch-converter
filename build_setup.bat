@@ -18,7 +18,7 @@ if not exist "PPT_Word_to_PDF.exe" (
 )
 
 if not exist "release" mkdir "release"
-makensis "installer\PPT_Word_to_PDF_Setup.nsi"
+makensis /DPROJECT_ROOT="%CD%" "installer\PPT_Word_to_PDF_Setup.nsi"
 if errorlevel 1 goto failed
 
 echo.
