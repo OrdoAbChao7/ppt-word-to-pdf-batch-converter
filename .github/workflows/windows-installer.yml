@@ -1,0 +1,46 @@
+name: Build Windows Installer
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-installer:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install NSIS
+        shell: pwsh
+        run: choco install nsis --no-progress --yes
+
+      - name: Build setup.exe
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force release | Out-Null
+          & "C:\Program Files (x86)\NSIS\makensis.exe" installer\PPT_Word_to_PDF_Setup.nsi
+          Get-FileHash release\PPT_Word_to_PDF_Setup_v1.0.1.exe -Algorithm SHA256 | ForEach-Object { "$($_.Hash)  $($_.Path | Split-Path -Leaf)" } | Set-Content -Encoding ascii release\PPT_Word_to_PDF_Setup_v1.0.1.exe.sha256
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PPT_Word_to_PDF_Setup_v1.0.1
+          path: |
+            release/PPT_Word_to_PDF_Setup_v1.0.1.exe
+            release/PPT_Word_to_PDF_Setup_v1.0.1.exe.sha256
+          if-no-files-found: error
+
+      - name: Publish tagged release assets
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/PPT_Word_to_PDF_Setup_v1.0.1.exe
+            release/PPT_Word_to_PDF_Setup_v1.0.1.exe.sha256
+          generate_release_notes: true

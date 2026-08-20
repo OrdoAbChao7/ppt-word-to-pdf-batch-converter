@@ -10,6 +10,7 @@ env/
 # Build artifacts
 build/
 dist/
+release/
 *.spec
 
 # Local files
