@@ -9,3 +9,5 @@
 - [x] Verify the public GitHub Release and deliver its download link.
 - [x] Normalize NSIS source and output paths so the setup.exe compiles reproducibly on Linux and Windows hosts.
 - [x] Diagnose and correct the Windows GitHub Actions setup.exe build failure, then rerun the v1.0.1 release workflow.
+- [x] Compare the reported failed workflow run with the latest v1.0.1 installer workflow and release assets.
+- [x] Confirm that failed run #2 at fd2c0de is superseded by successful run #3 at c682894 for v1.0.1.
