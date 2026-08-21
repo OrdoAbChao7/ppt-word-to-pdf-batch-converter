@@ -18,16 +18,9 @@
 See [PROJECT_STATUS.md](./PROJECT_STATUS.md) for the evidence still needed and the maintenance rule.
 <!-- portfolio-authenticity:end -->
 
-A Windows desktop utility for non-technical users that batch converts PowerPoint and Word files in a folder to PDF.
+A simple Windows desktop script with a basic GUI to batch convert PowerPoint and Word files to PDF using local Microsoft Office COM automation.
 
 <img width="565" height="440" alt="1" src="https://github.com/user-attachments/assets/6d671668-b753-4630-a573-b5bb365a433f" />
-
-## Features
-
-- Batch convert `.ppt`, `.pptx`, `.doc`, `.docx` to PDF
-- Simple GUI you can use by double-clicking
-- Optional: flatten subfolders by moving files from subfolders into the main folder
-- Optional: delete original PPT/Word files after successful conversion
 - Real-time processing log display
 
 ## System requirements

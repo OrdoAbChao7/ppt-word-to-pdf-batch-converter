@@ -18,16 +18,9 @@
 关于仍需补充的验证证据和维护约定，请参阅 [PROJECT_STATUS.md](./PROJECT_STATUS.md)。
 <!-- portfolio-authenticity:end -->
 
-一个面向非技术人员的 Windows 桌面小工具，可以批量把文件夹中的 PowerPoint 和 Word 文件转换成 PDF。
+一个基于 Windows 本地 Microsoft Office COM 自动化的简单 Python 脚本，带有基础 GUI，用于批量将 PowerPoint 和 Word 文件转换为 PDF。
 
 <img width="565" height="440" alt="1" src="https://github.com/user-attachments/assets/6d671668-b753-4630-a573-b5bb365a433f" />
-
-## 功能
-
-- 支持 `.ppt`、`.pptx`、`.doc`、`.docx` 批量转换为 PDF
-- 提供简洁 GUI，双击即可使用
-- 可选：先整理子文件夹，把子文件夹里的文件移动到主文件夹
-- 可选：转换成功后删除原始 PPT / Word 文件
 - 实时显示处理记录
 
 ## 运行环境
