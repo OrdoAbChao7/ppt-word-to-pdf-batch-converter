@@ -4,6 +4,20 @@
 </div>
 <br>
 
+
+
+<!-- portfolio-authenticity:start -->
+## 项目状态
+
+**当前阶段：**Windows 桌面批量转换工具。
+
+**为什么做这个项目：**我写这个工具是为了把重复的 Office 转 PDF 任务变成输出位置可预测、便于检查的批处理流程。
+
+**适用边界：**它面向 Windows 桌面使用，并依赖本机安装的 Microsoft Office 组件。转换保真度、受保护文件、宏、字体和损坏文档都可能导致失败或生成不同的 PDF；它不是无头服务器转换器。
+
+关于仍需补充的验证证据和维护约定，请参阅 [PROJECT_STATUS.md](./PROJECT_STATUS.md)。
+<!-- portfolio-authenticity:end -->
+
 一个面向非技术人员的 Windows 桌面小工具，可以批量把文件夹中的 PowerPoint 和 Word 文件转换成 PDF。
 
 <img width="565" height="440" alt="1" src="https://github.com/user-attachments/assets/6d671668-b753-4630-a573-b5bb365a433f" />

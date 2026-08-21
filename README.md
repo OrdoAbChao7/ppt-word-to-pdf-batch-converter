@@ -4,6 +4,20 @@
 </div>
 <br>
 
+
+
+<!-- portfolio-authenticity:start -->
+## Project status
+
+**Stage:** Windows desktop conversion utility.
+
+**Why I built it:** I built this to turn a repeated Office-to-PDF conversion task into a reviewable batch process with predictable output locations.
+
+**Boundary:** It is tested for Windows desktop use and depends on locally installed Microsoft Office components. Conversion fidelity, protected files, macros, fonts, and damaged documents can produce failures or different PDFs. It is not a headless server converter.
+
+See [PROJECT_STATUS.md](./PROJECT_STATUS.md) for the evidence still needed and the maintenance rule.
+<!-- portfolio-authenticity:end -->
+
 A Windows desktop utility for non-technical users that batch converts PowerPoint and Word files in a folder to PDF.
 
 <img width="565" height="440" alt="1" src="https://github.com/user-attachments/assets/6d671668-b753-4630-a573-b5bb365a433f" />
