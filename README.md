@@ -21,7 +21,21 @@ See [PROJECT_STATUS.md](./PROJECT_STATUS.md) for the evidence still needed and t
 A simple Windows desktop script with a basic GUI to batch convert PowerPoint and Word files to PDF using local Microsoft Office COM automation.
 
 <img width="565" height="440" alt="1" src="https://github.com/user-attachments/assets/6d671668-b753-4630-a573-b5bb365a433f" />
-- Real-time processing log display
+
+## Features
+
+- **Full Format Support**:
+  - PowerPoint: `.ppt`, `.pptx`, `.pptm`, `.pps`, `.ppsx`, `.ppsm`
+  - Word: `.doc`, `.docx`, `.docm`, `.dot`, `.dotx`, `.rtf`
+- **In-Place Recursive Conversion (Recommended)**: Preserves original folder taxonomy and hierarchy.
+- **Cancellation Support**: Safely cancel long-running jobs and release Office COM processes.
+- **Robustness & Defensive Protections**:
+  - Suppresses modal Office dialogs (macros, Normal.dotm prompts, missing fonts) to prevent hanging.
+  - Native Windows path normalization.
+  - PDF lock detection & read-only source file safe deletion.
+  - Verifies generated PDF non-empty status before source deletion.
+- **Determinate Progress**: Real-time `[current/total]` progress tracking and logs.
+- **Safe Subfolder Flattening**: Optionally flattens only Office documents without touching non-Office assets.
 
 ## System requirements
 
