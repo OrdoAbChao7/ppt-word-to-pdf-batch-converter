@@ -21,7 +21,21 @@
 一个基于 Windows 本地 Microsoft Office COM 自动化的简单 Python 脚本，带有基础 GUI，用于批量将 PowerPoint 和 Word 文件转换为 PDF。
 
 <img width="565" height="440" alt="1" src="https://github.com/user-attachments/assets/6d671668-b753-4630-a573-b5bb365a433f" />
-- 实时显示处理记录
+
+## 功能特性
+
+- **全格式支持**：
+  - PowerPoint：`.ppt`、`.pptx`、`.pptm`、`.pps`、`.ppsx`、`.ppsm`
+  - Word：`.doc`、`.docx`、`.docm`、`.dot`、`.dotx`、`.rtf`
+- **原地递归转换（推荐）**：支持遍历子文件夹原地转换，完整保留原有文件夹分类与层级结构。
+- **取消转换**：支持任务中途优雅取消，安全关闭后台 Office 进程。
+- **高健壮性与安全保障**：
+  - 自动拦截 Office 弹窗（宏、模板提示、字体缺失），防止后台静默卡死。
+  - Windows 原生路径规范化兼容。
+  - 目标 PDF 读写占用检测与只读文件安全删除防护。
+  - 严格校验 PDF 生成完整性（非空）后才执行删除，防止源文件误删。
+- **清晰进度**：实时显示 `[当前/总数]` 确定性进度及处理日志。
+- **可选整理**：可选安全整理子文件夹（仅移动 Office 文档，不破坏代码与音视频素材）。
 
 ## 运行环境
 
