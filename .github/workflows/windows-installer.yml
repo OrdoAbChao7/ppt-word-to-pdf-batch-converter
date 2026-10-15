@@ -16,6 +16,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Test and build executable from source
+        shell: pwsh
+        run: |
+          python -m pip install -r requirements-dev.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m unittest discover -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --name PPT_Word_to_PDF --hidden-import pythoncom --hidden-import pywintypes --collect-submodules win32com gui.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Copy-Item -LiteralPath dist/PPT_Word_to_PDF.exe -Destination PPT_Word_to_PDF.exe -Force
+
       - name: Install NSIS
         shell: pwsh
         run: choco install nsis --no-progress --yes

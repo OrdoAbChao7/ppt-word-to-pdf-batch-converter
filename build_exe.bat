@@ -23,8 +23,11 @@ if errorlevel 1 goto failed
     gui.py
 if errorlevel 1 goto failed
 
+copy /y "dist\PPT_Word_to_PDF.exe" "PPT_Word_to_PDF.exe" >nul
+if errorlevel 1 goto failed
+
 echo.
-echo 打包完成：dist\PPT_Word_to_PDF.exe
+echo 打包完成：dist\PPT_Word_to_PDF.exe，同时已更新根目录绿色版。
 pause
 exit /b 0
 

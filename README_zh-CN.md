@@ -28,13 +28,15 @@
   - PowerPoint：`.ppt`、`.pptx`、`.pptm`、`.pps`、`.ppsx`、`.ppsm`
   - Word：`.doc`、`.docx`、`.docm`、`.dot`、`.dotx`、`.rtf`
 - **原地递归转换（推荐）**：支持遍历子文件夹原地转换，完整保留原有文件夹分类与层级结构。
-- **取消转换**：支持任务中途优雅取消，安全关闭后台 Office 进程。
+- **失败恢复**：单文件失败后重连 Office 重试一次；界面可单独重试失败文件、查看逐文件结果和保存日志。
+- **超时与取消**：每次尝试默认 120 秒，可调整到 10–1800 秒；可中途取消，清理本工具创建的转换进程。
 - **高健壮性与安全保障**：
-  - 自动拦截 Office 弹窗（宏、模板提示、字体缺失），防止后台静默卡死。
+  - 绕过损坏的 pywin32 COM 缓存；转换时禁用宏，失败不会被报告为全部成功。
   - Windows 原生路径规范化兼容。
   - 目标 PDF 读写占用检测与只读文件安全删除防护。
-  - 严格校验 PDF 生成完整性（非空）后才执行删除，防止源文件误删。
-- **清晰进度**：实时显示 `[当前/总数]` 确定性进度及处理日志。
+  - 临时 PDF 的结构与页面校验通过后才替换输出；默认保留源文件，转换中发生变化的源文件不会删除。
+  - 同名的 Word / PPT 分别输出为如 `report.docx.pdf` / `report.pptx.pdf`，失败重试保留原输出映射。
+- **清晰进度**：整批 PPT / Word 共用连续进度，分别统计成功、失败和未处理数量。
 - **可选整理**：可选安全整理子文件夹（仅移动 Office 文档，不破坏代码与音视频素材）。
 
 ## 运行环境
@@ -67,7 +69,7 @@ PPT_Word_to_PDF.exe
 2. 选择要处理的文件夹
 3. 按需勾选整理子文件夹、删除源文件
 4. 点击“开始转换”
-5. 等待完成提示
+5. 查看成功/失败统计；在“文件结果”双击查看详情，必要时调大超时并点击“仅重试失败文件”。
 
 ## 从源码运行
 
@@ -95,6 +97,10 @@ build_exe.bat
 dist\PPT_Word_to_PDF.exe
 ```
 
+构建脚本也会同步更新根目录的绿色版程序，安装包会使用最新构建。
+
+回归验证：`python -m unittest discover -v`；安装了 Word / PowerPoint 的 Windows 桌面可另运行 `python -m tests.office_smoke`，自动生成并清理真实测试文档。
+
 ## 打包 setup.exe
 
 安装 [NSIS](https://nsis.sourceforge.io/Download) 后，双击：
@@ -117,6 +123,8 @@ release\PPT_Word_to_PDF_Setup_v1.0.1.exe
 .
 ├── gui.py              # 图形界面入口
 ├── run.py              # 转换和文件夹整理逻辑
+├── office_backend.py   # Office 子进程、缓存绕过、超时与取消
+├── tests/              # 回归测试和真实 Office 验证
 ├── build_exe.bat       # 打包 exe
 ├── build_setup.bat     # 打包 Windows 安装程序
 ├── installer/          # NSIS 安装程序配置与构建说明

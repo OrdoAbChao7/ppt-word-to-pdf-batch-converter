@@ -28,13 +28,15 @@ A simple Windows desktop script with a basic GUI to batch convert PowerPoint and
   - PowerPoint: `.ppt`, `.pptx`, `.pptm`, `.pps`, `.ppsx`, `.ppsm`
   - Word: `.doc`, `.docx`, `.docm`, `.dot`, `.dotx`, `.rtf`
 - **In-Place Recursive Conversion (Recommended)**: Preserves original folder taxonomy and hierarchy.
-- **Cancellation Support**: Safely cancel long-running jobs and release Office COM processes.
+- **Failure Recovery**: Reconnect and retry once per failed file; inspect per-file results, retry failures only, and save logs.
+- **Timeout and Cancellation**: Each attempt defaults to 120 seconds (10–1800 in the GUI); cancel blocked conversions and clean up processes created by this tool.
 - **Robustness & Defensive Protections**:
-  - Suppresses modal Office dialogs (macros, Normal.dotm prompts, missing fonts) to prevent hanging.
+  - Bypasses damaged pywin32 generated COM caches and disables macros during conversion.
   - Native Windows path normalization.
   - PDF lock detection & read-only source file safe deletion.
-  - Verifies generated PDF non-empty status before source deletion.
-- **Determinate Progress**: Real-time `[current/total]` progress tracking and logs.
+  - Validates PDF structure/pages before atomic replacement. Sources are retained by default; changed sources are never deleted after export.
+  - Same-stem Office files use distinct names such as `report.docx.pdf` and `report.pptx.pdf`; GUI retries preserve original output paths.
+- **Determinate Progress**: Continuous progress across both formats with separate success/failure/pending totals.
 - **Safe Subfolder Flattening**: Optionally flattens only Office documents without touching non-Office assets.
 
 ## System requirements
@@ -67,7 +69,7 @@ Then:
 2. Select the folder to process
 3. Check "Flatten subfolders" and/or "Delete source files" if needed
 4. Click "Start Conversion"
-5. Wait for the completion message
+5. Inspect the result totals and file details; increase the timeout if needed and retry failed files only.
 
 ## Run from source
 
