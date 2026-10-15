@@ -184,7 +184,7 @@ def _convert_files(folder, files, outputs, delete_source, timeout, log_callback,
                     try:
                         if kind not in workers:
                             workers[kind] = OfficeWorker(kind, timeout=timeout)
-                        workers[kind].convert(source, staged, cancel_callback)
+                        result.warning = workers[kind].convert(source, staged, cancel_callback) or ""
                         _validate_pdf(staged)
                         os.replace(staged, target)
                         staged = None
@@ -207,6 +207,8 @@ def _convert_files(folder, files, outputs, delete_source, timeout, log_callback,
                             os.remove(staged)
                         staged = None
                 _log(f"完成：{os.path.relpath(target, folder)}", log_callback)
+                if result.warning:
+                    _log(result.warning, log_callback)
                 if delete_source:
                     try:
                         current_stat = os.stat(source)

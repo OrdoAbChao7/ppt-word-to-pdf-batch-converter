@@ -134,12 +134,22 @@ class OfficeSession:
 
     def export(self, source, target):
         document = None
+        notice = ""
         try:
             if self.kind == "ppt":
                 document = _com_call(lambda: self.app.Presentations.Open(source, True, False, False))
                 # pywin32 cannot marshal pythoncom.Missing into the optional
                 # PrintRange IDispatch parameter; pass a null interface explicitly.
-                _com_call(lambda: document.ExportAsFixedFormat(target, 2, PrintRange=None))
+                try:
+                    _com_call(lambda: document.ExportAsFixedFormat(target, 2, PrintRange=None))
+                except pythoncom.com_error as exc:
+                    description = (exc.excepinfo[2] or "") if exc.excepinfo else ""
+                    read_only = _com_call(lambda: document.ReadOnly)
+                    read_only = read_only() if callable(read_only) else read_only
+                    if not read_only or not any(word in description.lower() for word in ("只读", "read-only", "read only")):
+                        raise
+                    self._export_readonly_presentation(document, source, target)
+                    notice = "源课件限制直接导出，已通过临时演示文稿生成 PDF；原课件及保护设置未修改。"
             else:
                 document = _com_call(lambda: self.app.Documents.Open(
                     FileName=source, ReadOnly=True, ConfirmConversions=False,
@@ -158,6 +168,25 @@ class OfficeSession:
                     _com_call(lambda: document.Close())
                 else:
                     _com_call(lambda: document.Close(0))
+        return notice
+
+    def _export_readonly_presentation(self, source_document, source, target):
+        working = _com_call(lambda: self.app.Presentations.Add(False))
+        try:
+            # Use PowerPoint's own import operation so the original slide masters,
+            # objects and notes are imported rather than rasterizing slide images.
+            width = _com_call(lambda: source_document.PageSetup.SlideWidth)
+            height = _com_call(lambda: source_document.PageSetup.SlideHeight)
+            _com_call(lambda: setattr(working.PageSetup, "SlideWidth", width))
+            _com_call(lambda: setattr(working.PageSetup, "SlideHeight", height))
+            expected = _com_call(lambda: source_document.Slides.Count)
+            imported = _com_call(lambda: working.Slides.InsertFromFile(source, 0))
+            actual = _com_call(lambda: working.Slides.Count)
+            if imported != expected or actual != expected:
+                raise RuntimeError(f"只读课件导入不完整：原有 {expected} 页，导入 {imported} 页，实际 {actual} 页；已保留源文件。")
+            _com_call(lambda: working.ExportAsFixedFormat(target, 2, PrintRange=None))
+        finally:
+            _com_call(lambda: working.Close())
 
     def close(self):
         if self.app is None:
@@ -189,8 +218,8 @@ def _office_main(kind, connection):
             if command[0] == "stop":
                 break
             try:
-                session.export(command[1], command[2])
-                connection.send(("done",))
+                notice = session.export(command[1], command[2])
+                connection.send(("done", notice))
             except Exception as exc:
                 connection.send(("error", str(exc)))
                 break
@@ -254,7 +283,8 @@ class OfficeWorker:
                     child.close()
                 self._receive(deadline, cancel_callback)
             self.connection.send(("convert", source, target))
-            self._receive(deadline, cancel_callback)
+            message = self._receive(deadline, cancel_callback)
+            return message[1] if len(message) > 1 else ""
         except Exception:
             self.close()
             raise

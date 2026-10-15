@@ -45,6 +45,12 @@ def main(executable=None):
                             slide = presentation.Slides.Add(1, 1)
                             slide.Shapes.Title.TextFrame.TextRange.Text = "转换验证 / PDF smoke test"
                             presentation.SaveAs(str(nested / "同名.pptx"), 24)
+                            hidden = presentation.Slides.Add(2, 1)
+                            hidden.Shapes.Title.TextFrame.TextRange.Text = "Hidden draft must not appear in PDF"
+                            hidden.SlideShowTransition.Hidden = -1
+                            presentation.WritePassword = "test123"
+                            presentation.SaveAs(str(root / "修改保护.pptx"), 24)
+                            presentation.SaveAs(str(root / "修改保护.ppt"), 1)
                         finally:
                             presentation.Close()
                 finally:
@@ -57,20 +63,24 @@ def main(executable=None):
                 multiprocessing.set_executable(str(Path(executable).resolve()))
                 sys.frozen = True
             report = convert_folder_report(str(root), recursive=True, timeout=30)
-            assert (report.succeeded, report.failed) == (3, 2), report
+            assert (report.succeeded, report.failed) == (5, 2), report
             actual = {Path(item.source).name: item.status for item in report.results}
             assert actual == {"word.rtf": "success", "同名.docx": "success", "同名.pptx": "success",
+                              "修改保护.pptx": "success", "修改保护.ppt": "success",
                               "密码保护.docx": "failed", "损坏.pptx": "failed"}, actual
             assert not report.cancelled
             for item in report.results:
                 assert Path(item.source).exists(), item
                 if item.status == "success":
+                    if Path(item.source).stem == "修改保护":
+                        assert item.warning, "Write-protected fixtures must exercise compatibility export"
                     reader = PdfReader(item.output)
                     assert len(reader.pages) == 1, item
                     assert "smoke test" in reader.pages[0].extract_text() or "Office to PDF" in reader.pages[0].extract_text(), item
+                    assert "Hidden draft" not in reader.pages[0].extract_text(), item
                 else:
                     assert not Path(item.output).exists(), item
-            print("PASS: real Office, Chinese paths, nested folders, same stems, RTF, password and damaged files"
+            print("PASS: real Office, Chinese paths, nested folders, same stems, RTF, write-protected PPT/PPTX, password and damaged files"
                   + (" (packaged executable workers)" if executable else ""))
     finally:
         pythoncom.CoUninitialize()

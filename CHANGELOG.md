@@ -4,6 +4,8 @@ This file starts tracking repository-facing changes from the current maintenance
 
 ## Unreleased
 
+- Fix read-only export failures on modification-protected PPT/PPTX files: import slides into a temporary PowerPoint presentation, preserve slide size, verify imported slide counts, and export without modifying source files or protection settings. Record compatibility handling in the conversion log.
+- Verify the reported 34-file course folder against real Office: 34 successful conversions, matching visible-slide counts/page sizes, and unchanged source SHA-256 hashes. Add generated write-protected PPT/PPTX smoke fixtures.
 - Bypass damaged pywin32 generated caches for application and returned COM objects.
 - Isolate Office conversion in reusable worker processes with a per-file timeout, bounded shutdown, cancellation, and one reconnect/retry.
 - Report per-file failures accurately, reserve distinct PDF names across Word/PowerPoint formats, and export via validated temporary PDFs and atomic replacement.
