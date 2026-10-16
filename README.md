@@ -20,7 +20,7 @@ See [PROJECT_STATUS.md](./PROJECT_STATUS.md) for the evidence still needed and t
 
 A simple Windows desktop script with a basic GUI to batch convert PowerPoint and Word files to PDF using local Microsoft Office COM automation.
 
-<img width="565" height="440" alt="1" src="https://github.com/user-attachments/assets/6d671668-b753-4630-a573-b5bb365a433f" />
+<img width="736" alt="Minimal light desktop conversion interface" src="docs/gui.png" />
 
 ## Features
 
@@ -49,7 +49,7 @@ A simple Windows desktop script with a basic GUI to batch convert PowerPoint and
 
 ## For end users
 
-It is recommended to download `PPT_Word_to_PDF_Setup_v1.0.1.exe` from [Releases](../../releases). Double-click to install, then start the program from the Desktop or Start Menu. The installer performs a per-user installation and does not require administrator privileges.
+It is recommended to download `PPT_Word_to_PDF_Setup_v1.1.0.exe` from [Releases](../../releases). Double-click to install, then start the program from the Desktop or Start Menu. The installer performs a per-user installation and does not require administrator privileges.
 
 Before installing, make sure your PC meets the following:
 
@@ -67,9 +67,11 @@ Then:
 
 1. Click "Choose Folder"
 2. Select the folder to process
-3. Check "Flatten subfolders" and/or "Delete source files" if needed
+3. Expand advanced settings if you need to move/delete source files or adjust the timeout
 4. Click "Start Conversion"
 5. Inspect the result totals and file details; increase the timeout if needed and retry failed files only.
+
+Use `Ctrl+O` to choose a folder and `Ctrl+Enter` to start. Completion displays file results directly; logs and log export are available in the log tab.
 
 ## Run from source
 
@@ -108,7 +110,7 @@ build_setup.bat
 The generated installer is located at:
 
 ```text
-release\PPT_Word_to_PDF_Setup_v1.0.1.exe
+release\PPT_Word_to_PDF_Setup_v1.1.0.exe
 ```
 
 The installer will create Desktop and Start Menu shortcuts and provides a standard uninstaller. For release process, SHA-256 verification, and GitHub Actions automation, see [installer/README.md](installer/README.md).

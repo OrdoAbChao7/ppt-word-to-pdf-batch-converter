@@ -2,8 +2,10 @@
 
 This file starts tracking repository-facing changes from the current maintenance pass. Earlier commits remain available in Git history.
 
-## Unreleased
+## v1.1.0 — 2026-10-16
 
+- Simplify the light desktop interface: collapsible advanced settings, visible source-file change summaries, contextual cancel/retry actions, results-first completion, keyboard shortcuts, and improved small-window layout.
+- Publish matching portable and installer packages with SHA-256 checksums. Derive installer metadata and release asset names from one version definition and reject mismatched version tags.
 - Fix read-only export failures on modification-protected PPT/PPTX files: import slides into a temporary PowerPoint presentation, preserve slide size, verify imported slide counts, and export without modifying source files or protection settings. Record compatibility handling in the conversion log.
 - Verify the reported 34-file course folder against real Office: 34 successful conversions, matching visible-slide counts/page sizes, and unchanged source SHA-256 hashes. Add generated write-protected PPT/PPTX smoke fixtures.
 - Bypass damaged pywin32 generated caches for application and returned COM objects.

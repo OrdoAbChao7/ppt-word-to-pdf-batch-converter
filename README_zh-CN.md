@@ -20,7 +20,7 @@
 
 一个基于 Windows 本地 Microsoft Office COM 自动化的简单 Python 脚本，带有基础 GUI，用于批量将 PowerPoint 和 Word 文件转换为 PDF。
 
-<img width="565" height="440" alt="1" src="https://github.com/user-attachments/assets/6d671668-b753-4630-a573-b5bb365a433f" />
+<img width="736" alt="浅色简洁的批量转换界面" src="docs/gui.png" />
 
 ## 功能特性
 
@@ -49,7 +49,7 @@
 
 ## 给普通用户使用
 
-推荐从 [Releases](../../releases) 下载 `PPT_Word_to_PDF_Setup_v1.0.1.exe`，双击安装后通过桌面或开始菜单启动程序。安装程序会在当前用户目录安装，不需要管理员权限。
+推荐从 [Releases](../../releases) 下载 `PPT_Word_to_PDF_Setup_v1.1.0.exe`，双击安装后通过桌面或开始菜单启动程序。安装程序会在当前用户目录安装，不需要管理员权限。
 
 安装完成前，请确认电脑满足以下条件：
 
@@ -67,9 +67,11 @@ PPT_Word_to_PDF.exe
 
 1. 点击“选择文件夹”
 2. 选择要处理的文件夹
-3. 按需勾选整理子文件夹、删除源文件
+3. 如需移动或删除源文件、调整超时，展开“高级设置”
 4. 点击“开始转换”
 5. 查看成功/失败统计；在“文件结果”双击查看详情，必要时调大超时并点击“仅重试失败文件”。
+
+支持 `Ctrl+O` 选择文件夹、`Ctrl+Enter` 开始转换。完成后直接显示文件结果；日志与导出入口位于“处理日志”页。
 
 ## 从源码运行
 
@@ -112,7 +114,7 @@ build_setup.bat
 生成的安装程序位于：
 
 ```text
-release\PPT_Word_to_PDF_Setup_v1.0.1.exe
+release\PPT_Word_to_PDF_Setup_v1.1.0.exe
 ```
 
 安装程序会创建桌面和开始菜单快捷方式，同时提供标准卸载入口。发布流程、SHA-256 校验与 GitHub Actions 自动构建说明见 [installer/README.md](installer/README.md)。

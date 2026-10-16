@@ -13,7 +13,7 @@ SetCompressor /SOLID lzma
 
 !define PRODUCT_NAME "PPT / Word 批量转 PDF"
 !define PRODUCT_EXE "PPT_Word_to_PDF.exe"
-!define PRODUCT_VERSION "1.0.1"
+!define PRODUCT_VERSION "1.1.0"
 !define PRODUCT_PUBLISHER "OrdoAbChao7"
 !define PRODUCT_WEB_SITE "https://github.com/OrdoAbChao7/ppt-word-to-pdf-batch-converter"
 !define PRODUCT_REG_KEY "Software\PPTWordToPDF"
@@ -27,7 +27,7 @@ InstallDir "$LOCALAPPDATA\PPT_Word_to_PDF"
 InstallDirRegKey HKCU "${PRODUCT_REG_KEY}" "InstallDir"
 BrandingText "${PRODUCT_NAME}"
 
-VIProductVersion "1.0.1.0"
+VIProductVersion "${PRODUCT_VERSION}.0"
 VIAddVersionKey /LANG=2052 "ProductName" "${PRODUCT_NAME}"
 VIAddVersionKey /LANG=2052 "ProductVersion" "${PRODUCT_VERSION}"
 VIAddVersionKey /LANG=2052 "FileVersion" "${PRODUCT_VERSION}"

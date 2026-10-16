@@ -32,6 +32,15 @@ Record additional Office versions and representative fixtures for layout drift, 
 - A healthy Office instance is reused for speed. After failure the worker reconnects once. The default per-attempt deadline is 120 seconds, adjustable in the GUI; a file can therefore take two deadlines before being marked failed. Only a newly identified Office process can be terminated on timeout; existing user Office processes are preserved.
 - The rebuilt portable executable passed GUI startup/clean shutdown and the same real Office smoke scenarios using its bundled worker entry point (`python -m tests.office_smoke --executable dist/PPT_Word_to_PDF.exe`).
 
+## GUI refinement (2026-10-16)
+
+- Light, compact Tkinter interface with a single primary conversion action. File-moving/deletion options and per-attempt timeout live in a collapsible settings area; active file changes stay visible in its summary.
+- Results are the default tab. Completion updates the results and totals without a modal dialog; cancellation and failed-only retry appear when applicable. Logs and log export remain available in a separate tab.
+- Keyboard shortcuts: Ctrl+O selects a folder, Ctrl+Enter starts conversion, and Enter opens selected file details. Result columns support horizontal scrolling; long progress filenames are shortened for display only.
+- `python -m unittest discover -v`: all 33 tests passed, including six GUI tests, on the local Windows desktop. Window inspection covers the default 920×720 layout, expanded settings at 800×640, mixed results, and long progress filenames. No conversion backend changes.
+- The portable executable was rebuilt with PyInstaller and its GUI startup and clean shutdown were verified. The root portable executable and `dist/PPT_Word_to_PDF.exe` contain the updated interface.
+- v1.1.0 preparation: the packaged-worker real Office smoke test passed all seven scenarios (five successful exports plus the expected isolated failures for password-protected and damaged files), including modification-protected PPT/PPTX, same-stem files, Chinese paths, and RTF. Release automation derives package names from the installer version and stages portable/setup executables and their SHA-256 files in a Release draft for verification before publication.
+
 ## Maintenance rule
 
 Future changes should describe one concrete behavior, include the smallest relevant verification step, and update this document whenever the project boundary changes.
