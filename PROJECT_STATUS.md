@@ -40,6 +40,8 @@ Record additional Office versions and representative fixtures for layout drift, 
 - `python -m unittest discover -v`: all 33 tests passed, including six GUI tests, on the local Windows desktop. Window inspection covers the default 920×720 layout, expanded settings at 800×640, mixed results, and long progress filenames. No conversion backend changes.
 - The portable executable was rebuilt with PyInstaller and its GUI startup and clean shutdown were verified. The root portable executable and `dist/PPT_Word_to_PDF.exe` contain the updated interface.
 - v1.1.0 preparation: the packaged-worker real Office smoke test passed all seven scenarios (five successful exports plus the expected isolated failures for password-protected and damaged files), including modification-protected PPT/PPTX, same-stem files, Chinese paths, and RTF. Release automation derives package names from the installer version and stages portable/setup executables and their SHA-256 files in a Release draft for verification before publication.
+- [v1.1.0](https://github.com/OrdoAbChao7/ppt-word-to-pdf-batch-converter/releases/tag/v1.1.0) was published as the latest stable release from commit `ceb232a`. The [Windows release build](https://github.com/OrdoAbChao7/ppt-word-to-pdf-batch-converter/actions/runs/38859327626) passed all 33 tests and produced the portable executable, installer, and their two SHA-256 files.
+- Both downloaded release packages matched their published checksums. The installer reports product version `1.1.0`, and the downloaded portable executable passed GUI startup and clean shutdown verification.
 
 ## Maintenance rule
 
