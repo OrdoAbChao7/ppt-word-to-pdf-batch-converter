@@ -16,6 +16,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Read and validate release version
+        id: version
+        shell: pwsh
+        run: |
+          $definition = Select-String -LiteralPath installer/PPT_Word_to_PDF_Setup.nsi -Pattern '^!define PRODUCT_VERSION "([0-9]+\.[0-9]+\.[0-9]+)"$'
+          if (-not $definition) { throw "Installer version is missing" }
+          $version = $definition.Matches[0].Groups[1].Value
+          if ($env:GITHUB_REF_TYPE -eq 'tag' -and $env:GITHUB_REF_NAME -ne "v$version") {
+            throw "Tag $env:GITHUB_REF_NAME does not match installer version v$version"
+          }
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "PRODUCT_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -36,27 +49,36 @@ jobs:
         shell: pwsh
         run: choco install nsis --no-progress --yes
 
-      - name: Build setup.exe
+      - name: Build release packages and checksums
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force release | Out-Null
           & "C:\Program Files (x86)\NSIS\makensis.exe" /DPROJECT_ROOT="$env:GITHUB_WORKSPACE" installer\PPT_Word_to_PDF_Setup.nsi
-          Get-FileHash release\PPT_Word_to_PDF_Setup_v1.0.1.exe -Algorithm SHA256 | ForEach-Object { "$($_.Hash)  $($_.Path | Split-Path -Leaf)" } | Set-Content -Encoding ascii release\PPT_Word_to_PDF_Setup_v1.0.1.exe.sha256
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Copy-Item -LiteralPath dist/PPT_Word_to_PDF.exe -Destination release/PPT_Word_to_PDF.exe
+          foreach ($file in @('PPT_Word_to_PDF.exe', "PPT_Word_to_PDF_Setup_v$env:PRODUCT_VERSION.exe")) {
+            Get-FileHash "release/$file" -Algorithm SHA256 | ForEach-Object { "$($_.Hash)  $file" } | Set-Content -Encoding ascii "release/$file.sha256"
+          }
 
-      - name: Upload installer artifact
+      - name: Upload release artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PPT_Word_to_PDF_Setup_v1.0.1
+          name: PPT_Word_to_PDF_v${{ steps.version.outputs.version }}
           path: |
-            release/PPT_Word_to_PDF_Setup_v1.0.1.exe
-            release/PPT_Word_to_PDF_Setup_v1.0.1.exe.sha256
+            release/PPT_Word_to_PDF.exe
+            release/PPT_Word_to_PDF.exe.sha256
+            release/PPT_Word_to_PDF_Setup_v${{ steps.version.outputs.version }}.exe
+            release/PPT_Word_to_PDF_Setup_v${{ steps.version.outputs.version }}.exe.sha256
           if-no-files-found: error
 
       - name: Publish tagged release assets
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
+          draft: true
           files: |
-            release/PPT_Word_to_PDF_Setup_v1.0.1.exe
-            release/PPT_Word_to_PDF_Setup_v1.0.1.exe.sha256
+            release/PPT_Word_to_PDF.exe
+            release/PPT_Word_to_PDF.exe.sha256
+            release/PPT_Word_to_PDF_Setup_v${{ steps.version.outputs.version }}.exe
+            release/PPT_Word_to_PDF_Setup_v${{ steps.version.outputs.version }}.exe.sha256
           generate_release_notes: true

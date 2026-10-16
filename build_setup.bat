@@ -22,7 +22,7 @@ makensis /DPROJECT_ROOT="%CD%" "installer\PPT_Word_to_PDF_Setup.nsi"
 if errorlevel 1 goto failed
 
 echo.
-echo 安装包已生成：release\PPT_Word_to_PDF_Setup_v1.0.1.exe
+echo 安装包已生成，位于 release 目录；版本号由安装脚本统一指定。
 pause
 exit /b 0
 

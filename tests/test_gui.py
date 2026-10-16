@@ -96,6 +96,42 @@ class GuiTests(unittest.TestCase):
         self.app.start_button.invoke()
         self.assertIsNone(self.app.worker)
 
+    def test_collapsed_settings_keep_file_changes_visible(self):
+        self.app.update()
+        self.assertEqual(self.app.advanced_frame.winfo_manager(), "")
+        self.app.advanced_button.invoke()
+        self.app.update()
+        self.assertEqual(self.app.advanced_frame.winfo_manager(), "pack")
+        self.app.flatten_var.set(True)
+        self.app.delete_source_var.set(True)
+        self.app.timeout_var.set("360")
+        self.app.advanced_button.invoke()
+        self.assertIn("移动源文件到主文件夹", self.app.settings_summary_var.get())
+        self.assertIn("成功后删除源文件", self.app.settings_summary_var.get())
+        self.assertIn("360 秒", self.app.settings_summary_var.get())
+
+    def test_success_shows_results_without_completion_dialog(self):
+        (self.folder / "good.docx").write_bytes(b"source")
+        self.app.folder_var.set(str(self.folder))
+        self.app.start_button.invoke()
+        self.wait_for_result()
+        self.assertEqual(self.app.last_report.succeeded, 1)
+        self.assertEqual(self.app.notebook.select(), str(self.app.results_frame))
+        self.assertEqual(len(self.app.result_tree.get_children()), 1)
+        self.assertEqual(self.app.empty_state.winfo_manager(), "")
+        gui.messagebox.showinfo.assert_not_called()
+
+    def test_settings_and_primary_actions_follow_task_state(self):
+        self.app._set_running(True)
+        self.app.update_idletasks()
+        self.assertEqual(str(self.app.start_button["state"]), "disabled")
+        self.assertEqual(str(self.app.cancel_button["state"]), "normal")
+        self.assertEqual(self.app.cancel_button.winfo_manager(), "pack")
+        self.assertTrue(all(str(widget["state"]) == "disabled" for widget in self.app.option_widgets))
+        self.app._set_running(False)
+        self.assertEqual(str(self.app.start_button["state"]), "normal")
+        self.assertEqual(self.app.cancel_button.winfo_manager(), "")
+
 
 if __name__ == "__main__":
     unittest.main()
