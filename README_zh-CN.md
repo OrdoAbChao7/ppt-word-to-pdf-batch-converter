@@ -4,6 +4,14 @@
 </div>
 <br>
 
+## PDF 转 Markdown
+
+在顶部选择 **PDF → Markdown**，选择文件夹后点击“开始转换”。使用微软开源 [MarkItDown](https://github.com/microsoft/markitdown)（MIT 许可证）本地转换，无需 API Key；此模式不调用 Office。
+
+每个 PDF 旁生成同名 UTF-8 `.md`，支持子文件夹、进度、取消、单次超时、自动重试一次和仅重试失败文件。原 PDF 始终保留，移动和删除源文件选项在此模式下禁用。转换成功且内容非空后替换已有同名 Markdown；失败不会覆盖已有内容。
+
+适用于文字型 PDF。扫描件和图片型 PDF 需要 OCR，当前不支持；未提取到文字时显示失败原因。复杂排版、公式、图片和表格不保证完整还原。源码运行前执行 `.venv\Scripts\python -m pip install -r requirements.txt`。历史发布的 v1.1.0 安装包不含本功能，需使用更新后的源码或重新打包。
+
 
 
 <!-- portfolio-authenticity:start -->
@@ -45,7 +53,7 @@
 - 已安装 Microsoft PowerPoint 和 Microsoft Word
 - 如果直接运行源码，需要 Python 3.10 或更高版本
 
-> 转换功能依赖本机 Office 程序，因此不适用于没有安装 Word / PowerPoint 的电脑。
+> PPT / Word 转 PDF 依赖本机 Office；PDF 转 Markdown 无需安装 Word / PowerPoint。
 
 ## 给普通用户使用
 

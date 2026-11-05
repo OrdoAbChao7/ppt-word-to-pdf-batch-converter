@@ -11,16 +11,7 @@ if exist ".venv\Scripts\python.exe" (
 "%PYTHON%" -m pip install -r requirements-dev.txt
 if errorlevel 1 goto failed
 
-"%PYTHON%" -m PyInstaller ^
-    --noconfirm ^
-    --clean ^
-    --onefile ^
-    --windowed ^
-    --name PPT_Word_to_PDF ^
-    --hidden-import pythoncom ^
-    --hidden-import pywintypes ^
-    --collect-submodules win32com ^
-    gui.py
+"%PYTHON%" -m PyInstaller --noconfirm --clean PPT_Word_to_PDF.spec
 if errorlevel 1 goto failed
 
 copy /y "dist\PPT_Word_to_PDF.exe" "PPT_Word_to_PDF.exe" >nul

@@ -41,7 +41,9 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -m unittest discover -v
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python -m PyInstaller --noconfirm --clean --onefile --windowed --name PPT_Word_to_PDF --hidden-import pythoncom --hidden-import pywintypes --collect-submodules win32com gui.py
+          python -m PyInstaller --noconfirm --clean PPT_Word_to_PDF.spec
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m tests.markdown_smoke --executable dist/PPT_Word_to_PDF.exe
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Copy-Item -LiteralPath dist/PPT_Word_to_PDF.exe -Destination PPT_Word_to_PDF.exe -Force
 

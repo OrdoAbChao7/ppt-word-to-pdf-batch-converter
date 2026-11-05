@@ -12,6 +12,7 @@ build/
 dist/
 release/
 *.spec
+!PPT_Word_to_PDF.spec
 
 # Local files
 .env

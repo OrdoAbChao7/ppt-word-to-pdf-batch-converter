@@ -6,16 +6,18 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext, ttk
 
 from run import ConversionReport, convert_folder_report
+from markdown_backend import convert_pdf_folder_report
 
 
 class PdfConverterApp(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
-        self.title("PPT / Word 批量转 PDF")
-        self.geometry("920x720")
+        self.title("文档批量转换 · PDF / Markdown")
+        self.geometry("960x760")
         self.minsize(800, 640)
 
         self.folder_var = tk.StringVar()
+        self.mode_var = tk.StringVar(value="PPT / Word → PDF")
         self.recursive_var = tk.BooleanVar(value=True)
         self.flatten_var = tk.BooleanVar(value=False)
         self.delete_source_var = tk.BooleanVar(value=False)
@@ -35,6 +37,7 @@ class PdfConverterApp(tk.Tk):
         self._build_ui()
         for variable in (self.flatten_var, self.delete_source_var, self.timeout_var):
             variable.trace_add("write", self._update_settings_summary)
+        self.mode_var.trace_add("write", self._update_settings_summary)
         self._update_settings_summary()
         self.bind("<Control-o>", lambda event: self.choose_button.invoke())
         self.bind("<Control-Return>", lambda event: self.start_button.invoke())
@@ -49,15 +52,15 @@ class PdfConverterApp(tk.Tk):
                 return
             self.close_requested = True
             self.cancel_event.set()
-            self.status_var.set("正在停止转换并清理 Office，请稍候...")
+            self.status_var.set("正在停止转换并清理进程，请稍候...")
             return
         self.destroy()
 
     def _build_ui(self) -> None:
         self.configure(bg="#ffffff")
         font = ("Microsoft YaHei UI", 10)
-        ink, muted, line = "#202936", "#606b79", "#dce1e8"
-        accent = "#245bdb"
+        ink, muted, line = "#172b3a", "#536574", "#dce4e8"
+        accent = "#176b68"
         style = ttk.Style(self)
         style.theme_use("clam")
         style.configure(".", font=font, background="#ffffff", foreground=ink)
@@ -80,7 +83,7 @@ class PdfConverterApp(tk.Tk):
                         lightcolor=accent, darkcolor=accent, focuscolor="#ffffff",
                         padding=(24, 10))
         style.map("Accent.TButton", background=[("disabled", "#e9edf3"),
-                                                 ("pressed", "#1945ae"), ("active", "#1e4fbe")],
+                                                 ("pressed", "#10534f"), ("active", "#145e5a")],
                   foreground=[("disabled", "#7b8593")],
                   bordercolor=[("disabled", "#e9edf3"), ("!disabled", accent)],
                   lightcolor=[("disabled", "#e9edf3"), ("!disabled", accent)],
@@ -88,8 +91,8 @@ class PdfConverterApp(tk.Tk):
         style.configure("Quiet.TButton", background="#ffffff", bordercolor="#ffffff",
                         lightcolor="#ffffff", darkcolor="#ffffff", foreground=accent,
                         padding=(10, 4))
-        style.map("Quiet.TButton", background=[("active", "#eff4ff")],
-                  bordercolor=[("focus", accent), ("active", "#eff4ff")])
+        style.map("Quiet.TButton", background=[("active", "#eff7f5")],
+                  bordercolor=[("focus", accent), ("active", "#eff7f5")])
         style.configure("TEntry", padding=(10, 9), fieldbackground="#ffffff",
                         bordercolor=line, lightcolor=line, darkcolor=line)
         style.map("TEntry", bordercolor=[("focus", accent)],
@@ -98,6 +101,10 @@ class PdfConverterApp(tk.Tk):
                         focuscolor=accent, indicatormargin=(0, 0, 8, 0))
         style.map("TCheckbutton", background=[("active", "#ffffff")],
                   foreground=[("disabled", "#929aa5")])
+        style.configure("TCombobox", padding=(10, 8), fieldbackground="#f4f8f7",
+                        bordercolor=line, arrowsize=14)
+        style.map("TCombobox", fieldbackground=[("readonly", "#f4f8f7")],
+                  foreground=[("readonly", ink)], bordercolor=[("focus", accent)])
         style.configure("TSpinbox", padding=(6, 5), arrowsize=14, bordercolor=line)
         style.map("TSpinbox", bordercolor=[("focus", accent)])
         style.configure("TSeparator", background=line, bordercolor=line, lightcolor=line, darkcolor=line)
@@ -109,24 +116,34 @@ class PdfConverterApp(tk.Tk):
                         bordercolor=line, lightcolor="#ffffff", darkcolor=line)
         style.map("TNotebook.Tab", background=[("selected", "#ffffff"), ("active", "#edf0f5")],
                   foreground=[("selected", accent)])
-        style.configure("Treeview", font=font, rowheight=36, fieldbackground="#ffffff",
+        style.configure("Treeview", font=font, rowheight=40, fieldbackground="#ffffff",
                         background="#ffffff", borderwidth=0, bordercolor=line,
                         lightcolor="#ffffff", darkcolor="#ffffff", foreground=ink)
         style.configure("Treeview.Heading", font=("Microsoft YaHei UI", 9, "bold"),
                         background="#f6f7f9", foreground=muted, padding=(10, 10),
                         relief=tk.FLAT, borderwidth=0)
-        style.map("Treeview", background=[("selected", "#e8efff")],
-                  foreground=[("selected", "#1945ae")])
+        style.map("Treeview", background=[("selected", "#e6f2ef")],
+                  foreground=[("selected", "#10534f")])
         style.map("Treeview.Heading", background=[("active", "#edf0f5")])
         for orientation in ("Horizontal", "Vertical"):
             style.configure(f"{orientation}.TScrollbar", background="#d6dce5", troughcolor="#f6f7f9",
                             bordercolor="#f6f7f9", lightcolor="#d6dce5", darkcolor="#d6dce5",
                             arrowcolor=muted, arrowsize=12, gripcount=0)
 
-        container = ttk.Frame(self, padding=24)
+        container = ttk.Frame(self, padding=(32, 24))
         container.pack(fill=tk.BOTH, expand=True)
 
-        ttk.Label(container, text="PPT / Word 批量转 PDF", style="Title.TLabel").pack(anchor=tk.W, pady=(0, 20))
+        header = ttk.Frame(container)
+        header.pack(fill=tk.X, pady=(0, 22))
+        ttk.Label(header, text="文档批量转换", style="Title.TLabel").pack(side=tk.LEFT)
+        ttk.Label(header, text="PDF / Markdown", style="Hint.TLabel").pack(side=tk.RIGHT, anchor=tk.S, pady=4)
+        mode_frame = ttk.Frame(container)
+        mode_frame.pack(fill=tk.X, pady=(0, 18))
+        ttk.Label(mode_frame, text="转换类型").pack(side=tk.LEFT, padx=(0, 12))
+        self.mode_select = ttk.Combobox(mode_frame, textvariable=self.mode_var,
+                                       values=("PPT / Word → PDF", "PDF → Markdown"),
+                                       state="readonly", width=24)
+        self.mode_select.pack(side=tk.LEFT)
         ttk.Label(container, text="文件夹", style="Section.TLabel").pack(anchor=tk.W, pady=(0, 8))
         path_frame = ttk.Frame(container)
         path_frame.pack(fill=tk.X)
@@ -146,6 +163,7 @@ class PdfConverterApp(tk.Tk):
         self.advanced_frame = ttk.Frame(container, padding=(0, 12, 0, 4))
         file_options = ttk.Frame(self.advanced_frame)
         file_options.pack(fill=tk.X, pady=(0, 8))
+        self.office_option_widgets = []
         for text, variable in (
             ("将子文件夹的源文件移到主文件夹", self.flatten_var),
             ("PDF 校验成功后删除源文件", self.delete_source_var),
@@ -153,6 +171,7 @@ class PdfConverterApp(tk.Tk):
             widget = ttk.Checkbutton(file_options, text=text, variable=variable)
             widget.pack(side=tk.LEFT, padx=(0, 24))
             self.option_widgets.append(widget)
+            self.office_option_widgets.append(widget)
         timeout_frame = ttk.Frame(self.advanced_frame)
         timeout_frame.pack(fill=tk.X, pady=(2, 0))
         ttk.Label(timeout_frame, text="单次尝试超时").pack(side=tk.LEFT)
@@ -165,7 +184,7 @@ class PdfConverterApp(tk.Tk):
                                                 style="Hint.TLabel", wraplength=800)
         self.settings_summary_label.pack(fill=tk.X, pady=(8, 0))
         actions_frame = ttk.Frame(container)
-        actions_frame.pack(fill=tk.X, pady=(16, 16))
+        actions_frame.pack(fill=tk.X, pady=(18, 20))
         self.start_button = ttk.Button(
             actions_frame, text="开始转换", style="Accent.TButton", command=self._start_convert,
         )
@@ -209,7 +228,7 @@ class PdfConverterApp(tk.Tk):
         self.log_text = scrolledtext.ScrolledText(
             self.log_frame, height=6, wrap=tk.WORD, font=font, relief=tk.FLAT,
             borderwidth=0, background="#ffffff", foreground=ink, padx=12, pady=12,
-            selectbackground="#e8efff", selectforeground="#1945ae",
+            selectbackground="#e6f2ef", selectforeground="#10534f",
         )
         self.log_text.pack(fill=tk.BOTH, expand=True)
         self.log_text.configure(state=tk.DISABLED)
@@ -234,11 +253,19 @@ class PdfConverterApp(tk.Tk):
         self.result_tree.bind("<Return>", self._show_result_detail)
         self.empty_state = ttk.Frame(result_body, padding=16)
         self.empty_state.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
-        self.empty_title = ttk.Label(self.empty_state, text="准备好要转换的文件夹", style="Section.TLabel")
+        self.empty_title = ttk.Label(self.empty_state, text="转换结果将在这里显示", style="Section.TLabel")
         self.empty_title.pack()
-        self.empty_hint = ttk.Label(self.empty_state, text="转换完成后，在这里查看每个文件的结果。",
+        self.empty_hint = ttk.Label(self.empty_state, text="选择转换类型和文件夹，点击“开始转换”。",
                                      style="Hint.TLabel")
         self.empty_hint.pack(pady=(8, 0))
+        def resize_empty(event):
+            if event.height < 160:
+                self.empty_hint.pack_forget()
+            elif not self.empty_hint.winfo_manager():
+                self.empty_hint.pack(pady=(8, 0))
+            if self.empty_state.winfo_manager():
+                self.empty_state.place_configure(rely=0.65)
+        result_body.bind("<Configure>", resize_empty)
 
     def _toggle_advanced(self) -> None:
         if self.advanced_frame.winfo_manager():
@@ -249,6 +276,15 @@ class PdfConverterApp(tk.Tk):
             self.advanced_button.configure(text="收起设置")
 
     def _update_settings_summary(self, *_args) -> None:
+        markdown = self.mode_var.get() == "PDF → Markdown"
+        running = str(self.start_button["state"]) == "disabled"
+        for widget in self.office_option_widgets:
+            widget.configure(state=tk.DISABLED if markdown or running else tk.NORMAL)
+        if markdown:
+            self.settings_summary_var.set(
+                f"Markdown 保存在 PDF 旁 · 保留原 PDF · MarkItDown · 不支持扫描件 OCR · 超时 {self.timeout_var.get()} 秒")
+            self.settings_summary_label.configure(style="Hint.TLabel")
+            return
         details = ["移动源文件到主文件夹" if self.flatten_var.get() else "PDF 保存在原文件旁",
                    "成功后删除源文件" if self.delete_source_var.get() else "保留源文件"]
         if self.timeout_var.get() != "120":
@@ -299,7 +335,7 @@ class PdfConverterApp(tk.Tk):
         if self.worker and self.worker.is_alive():
             self.cancel_event.set()
             self.cancel_button.configure(state=tk.DISABLED)
-            self.status_var.set("正在取消转换并清理 Office...")
+            self.status_var.set("正在取消转换并清理进程...")
             self._append_log(">>> 收到用户取消指令，正在安全退出...")
 
     def _start_convert(self) -> None:
@@ -316,7 +352,7 @@ class PdfConverterApp(tk.Tk):
             messagebox.showwarning("超时时间无效", "请输入 10 到 1800 之间的秒数。")
             return
         job = (os.path.abspath(folder), self.recursive_var.get(), self.flatten_var.get(),
-               self.delete_source_var.get(), timeout)
+               self.delete_source_var.get(), timeout, self.mode_var.get())
         self._start_job(job)
 
     def _retry_failed(self) -> None:
@@ -329,7 +365,7 @@ class PdfConverterApp(tk.Tk):
                 messagebox.showwarning("超时时间无效", "请输入 10 到 1800 之间的秒数。")
                 return
             outputs = {item.source: item.output for item in self.last_report.results if item.status == "failed"}
-            job = (*self.last_job[:3], self.delete_source_var.get(), timeout)
+            job = (*self.last_job[:3], self.delete_source_var.get(), timeout, self.last_job[5])
             self._start_job(job, self.last_report.failed_files, outputs)
 
     def _start_job(self, job, only_files=None, output_paths=None) -> None:
@@ -341,6 +377,7 @@ class PdfConverterApp(tk.Tk):
         self.active_folder = job[0]
         self.folder_var.set(self.active_folder)
         self.last_job = job
+        self.mode_var.set(job[5])
         self.last_report = None
         if self.advanced_frame.winfo_manager():
             self._toggle_advanced()
@@ -352,7 +389,9 @@ class PdfConverterApp(tk.Tk):
         self.empty_hint.configure(text="完成后显示文件结果，可随时取消转换。")
         self.empty_state.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
         self._append_log(f"开始处理：{self.active_folder}")
-        self._append_log("PDF 将先写入临时文件，校验后替换同名输出。请勿手动关闭转换使用的 Office。")
+        self._append_log("Markdown 使用 MarkItDown 本地转换，非空后替换同名输出；原 PDF 始终保留。"
+                         if job[5] == "PDF → Markdown" else
+                         "PDF 将先写入临时文件，校验后替换同名输出。请勿手动关闭转换使用的 Office。")
 
         self.worker = threading.Thread(
             target=self._convert_in_background,
@@ -368,15 +407,17 @@ class PdfConverterApp(tk.Tk):
         flatten: bool,
         delete_source: bool,
         timeout: int,
+        mode: str = "PPT / Word → PDF",
         only_files=None,
         output_paths=None,
     ) -> None:
         try:
-            report = convert_folder_report(
+            converter = convert_pdf_folder_report if mode == "PDF → Markdown" else convert_folder_report
+            options = {} if mode == "PDF → Markdown" else {"flatten": flatten, "delete_source": delete_source}
+            report = converter(
                 folder,
                 recursive=recursive,
-                flatten=flatten,
-                delete_source=delete_source,
+                **options,
                 timeout=timeout,
                 only_files=only_files,
                 output_paths=output_paths,
@@ -411,7 +452,9 @@ class PdfConverterApp(tk.Tk):
                         self.empty_state.place_forget()
                     else:
                         self.empty_title.configure(text="任务已取消" if data.cancelled else "未找到可转换的文件")
-                        self.empty_hint.configure(text="可重新开始转换。" if data.cancelled else "请选择包含 PPT 或 Word 文档的文件夹。")
+                        self.empty_hint.configure(text="可重新开始转换。" if data.cancelled else
+                                                  "请选择包含 PDF 的文件夹。" if self.last_job[5] == "PDF → Markdown" else
+                                                  "请选择包含 PPT 或 Word 文档的文件夹。")
                     for index, item in enumerate(data.results):
                         self.result_tree.insert("", tk.END, iid=str(index), tags=(item.status,), values=(
                             "成功" if item.status == "success" else "失败",
@@ -441,6 +484,7 @@ class PdfConverterApp(tk.Tk):
     def _set_running(self, running: bool) -> None:
         for widget in (self.path_entry, self.choose_button, *self.option_widgets):
             widget.configure(state=tk.DISABLED if running else tk.NORMAL)
+        self.mode_select.configure(state=tk.DISABLED if running else "readonly")
         can_retry = bool(not running and self.last_report and self.last_report.failed)
         self.retry_button.configure(state=tk.NORMAL if can_retry else tk.DISABLED)
         if can_retry:
@@ -456,7 +500,7 @@ class PdfConverterApp(tk.Tk):
             self.progress.configure(value=0)
             self.progress.start(10)
             self.progress_count_var.set("")
-            self.status_var.set("正在扫描文件并启动 Office...")
+            self.status_var.set("正在扫描文件并启动转换进程...")
         else:
             self.start_button.configure(state=tk.NORMAL, text="开始转换")
             self.cancel_button.configure(state=tk.DISABLED)
@@ -470,6 +514,7 @@ class PdfConverterApp(tk.Tk):
                 self.progress.configure(mode="determinate", value=0)
                 self.progress_count_var.set("")
             self.status_var.set("就绪")
+        self._update_settings_summary()
 
     def _clear_log(self) -> None:
         self.log_text.configure(state=tk.NORMAL)

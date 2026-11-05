@@ -96,6 +96,27 @@ class GuiTests(unittest.TestCase):
         self.app.start_button.invoke()
         self.assertIsNone(self.app.worker)
 
+    def test_markdown_mode_routes_and_retry_keeps_original_mode(self):
+        from markdown_backend import MarkdownReport
+        source = self.folder / "课程.pdf"
+        source.write_bytes(b"fixture")
+        failed = MarkdownReport(1, [run.FileResult(str(source), str(source.with_suffix(".md")), "pdf", "failed", "fixture")])
+        success = MarkdownReport(1, [run.FileResult(str(source), str(source.with_suffix(".md")), "pdf", "success")])
+        self.app.mode_var.set("PDF → Markdown")
+        self.app.folder_var.set(str(self.folder))
+        self.app.flatten_var.set(True)
+        self.app.delete_source_var.set(True)
+        with patch("gui.convert_pdf_folder_report", side_effect=[failed, success]) as convert:
+            self.app.start_button.invoke()
+            self.wait_for_result()
+            self.app.mode_var.set("PPT / Word → PDF")
+            self.app.retry_button.invoke()
+            self.wait_for_result()
+        self.assertEqual(convert.call_count, 2)
+        self.assertNotIn("delete_source", convert.call_args.kwargs)
+        self.assertEqual(convert.call_args.kwargs["only_files"], [str(source)])
+        self.assertEqual(self.app.last_report.succeeded, 1)
+
     def test_collapsed_settings_keep_file_changes_visible(self):
         self.app.update()
         self.assertEqual(self.app.advanced_frame.winfo_manager(), "")

@@ -1,4 +1,4 @@
-Unicode True
+﻿Unicode True
 RequestExecutionLevel user
 SetCompressor /SOLID lzma
 
@@ -13,7 +13,7 @@ SetCompressor /SOLID lzma
 
 !define PRODUCT_NAME "PPT / Word 批量转 PDF"
 !define PRODUCT_EXE "PPT_Word_to_PDF.exe"
-!define PRODUCT_VERSION "1.1.0"
+!define PRODUCT_VERSION "1.2.0"
 !define PRODUCT_PUBLISHER "OrdoAbChao7"
 !define PRODUCT_WEB_SITE "https://github.com/OrdoAbChao7/ppt-word-to-pdf-batch-converter"
 !define PRODUCT_REG_KEY "Software\PPTWordToPDF"

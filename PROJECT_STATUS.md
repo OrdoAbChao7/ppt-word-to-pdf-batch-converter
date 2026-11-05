@@ -43,6 +43,19 @@ Record additional Office versions and representative fixtures for layout drift, 
 - [v1.1.0](https://github.com/OrdoAbChao7/ppt-word-to-pdf-batch-converter/releases/tag/v1.1.0) was published as the latest stable release from commit `ceb232a`. The [Windows release build](https://github.com/OrdoAbChao7/ppt-word-to-pdf-batch-converter/actions/runs/38859327626) passed all 33 tests and produced the portable executable, installer, and their two SHA-256 files.
 - Both downloaded release packages matched their published checksums. The installer reports product version `1.1.0`, and the downloaded portable executable passed GUI startup and clean shutdown verification.
 
+## PDF to Markdown (2026-10-26)
+
+- Added a separate `PDF → Markdown` GUI mode backed by Microsoft MarkItDown 0.1.9 (`markitdown[pdf]`, MIT). Processing is local, with no API key or Office application required for this mode. Text-based PDFs are supported; scanned/image-only PDFs need OCR, which is outside this mode. Complex layout, images, formulas and tables are not guaranteed to survive faithfully.
+- Outputs are UTF-8 `.md` files beside the source PDF. Sources are always kept; Office flatten/delete settings are disabled and ignored in this mode. Nonempty results replace existing same-name Markdown atomically; invalid, encrypted and empty PDFs fail without overwriting prior output. PDF structure is checked before MarkItDown because it can otherwise classify malformed PDFs as text.
+- Each file runs in a spawned process with a per-attempt deadline, cancellation cleanup and one automatic retry. Failed-only retries retain the original job's conversion mode and output mapping.
+- All 40 unittest cases passed locally, including GUI routing/retry, source retention, recursion, atomic output, real English/Chinese text in a Unicode path, damaged/encrypted/blank PDFs, cancellation and timeout process cleanup.
+- PyInstaller build succeeded. `python -m tests.markdown_smoke --executable dist/PPT_Word_to_PDF.exe` passed real English/Chinese extraction, damaged-file failure and source-retention checks using the packaged worker. Local portable binaries are updated; existing published v1.1.0 release assets do not include this feature. No new release was published.
+- Local and CI builds now share the tracked `.spec`, collecting MarkItDown modules, metadata, Magika data and PDFMiner CMaps. CI also runs the packaged Markdown smoke check.
+
 ## Maintenance rule
 
 Future changes should describe one concrete behavior, include the smallest relevant verification step, and update this document whenever the project boundary changes.
+
+## GUI polish (2026-11-05)
+
+Refined the existing Tkinter interface with a teal action palette, consistent selector styling, clearer header spacing and compact empty states. Inspected 960×760 and 800×640 layouts; GUI regression tests pass. v1.2.0 includes PDF to Markdown.

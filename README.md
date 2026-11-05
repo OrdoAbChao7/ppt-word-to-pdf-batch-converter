@@ -24,6 +24,8 @@ A simple Windows desktop script with a basic GUI to batch convert PowerPoint and
 
 ## Features
 
+- **PDF to Markdown**: Select `PDF → Markdown` to batch-convert local text PDFs using [Microsoft MarkItDown](https://github.com/microsoft/markitdown) (MIT). Writes UTF-8 `.md` files beside the PDFs, with optional subfolder scanning, progress, cancellation, timeout and failed-only retry. PDF sources are always retained; Office moving/deletion options are disabled in this mode. Successful nonempty output replaces an existing same-name `.md` atomically. Empty extraction fails without replacing existing output. No API key or Office application is needed for this mode; scanned/image PDFs require OCR, which is not included. Complex layout, formulas, images and tables may not be preserved faithfully.
+
 - **Full Format Support**:
   - PowerPoint: `.ppt`, `.pptx`, `.pptm`, `.pps`, `.ppsx`, `.ppsm`
   - Word: `.doc`, `.docx`, `.docm`, `.dot`, `.dotx`, `.rtf`
@@ -42,10 +44,10 @@ A simple Windows desktop script with a basic GUI to batch convert PowerPoint and
 ## System requirements
 
 - Windows
-- Microsoft PowerPoint and Microsoft Word installed
+- Microsoft PowerPoint and Microsoft Word installed (Office → PDF mode only)
 - If running from source, Python 3.10 or later
 
-> Conversion relies on locally installed Office applications and will not work on machines without Word/PowerPoint.
+> Office → PDF relies on locally installed Office applications. PDF → Markdown runs locally without Word/PowerPoint.
 
 ## For end users
 
